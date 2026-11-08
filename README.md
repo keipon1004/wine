@@ -1,6 +1,14 @@
 # wine
 
-個人用のワインテイスティング記録リポジトリです。**Markdown のみ**で、本番アプリや依存関係はありません。
+個人用のワインテイスティング記録リポジトリです。**Markdown が正本**で、公開用 HTML は GitHub Pages で自動生成されます。
+
+## 公開サイト（GitHub Pages）
+
+- **URL（project Pages）:** merge 後に GitHub Actions がデプロイします。想定 URL は  
+  **https://keipon1004.github.io/wine/**  
+  （初回はリポジトリ Settings → Pages で **GitHub Actions** ソースになっていることを確認してください。実際の URL はデプロイ完了後に確定します。）
+- `main` への push のたびに `.github/workflows/deploy-pages.yml` が `dist/` をビルドして公開します。
+- ローカルビルド: `npm ci && BASE_PATH=/wine/ npm run build && npm run validate`
 
 ## 考え方
 
@@ -31,6 +39,9 @@ Bot は記録の **複製** ではなく **整形とリンク案** を手伝う�
 ```
 .
 ├── README.md                 # このファイル
+├── package.json              # 静的サイトビルド（marked）
+├── scripts/                  # build-site.mjs / validate-site.mjs
+├── site/assets/              # CSS / クライアント JS（絞り込み）
 ├── templates/
 │   └── wine-log.md           # 記録の雛形
 ├── logs/

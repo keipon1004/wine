@@ -6,7 +6,7 @@
 
 | 国 | 地域 |
 |----|------|
-| フランス | [ボルドー](regions/france/bordeaux.md) · [ブルゴーニュ](regions/france/burgundy.md) |
+| フランス | [ボルドー](regions/france/bordeaux.md) · [ブルゴーニュ](regions/france/burgundy.md) · [リュリー](regions/france/rully.md) |
 | 日本 | [山梨](regions/japan/yamanashi.md) |
 
 ## 品種

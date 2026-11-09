@@ -7,6 +7,6 @@
 
 | 飲んだ日 | ワイン | 記録 |
 |----------|--------|------|
-| （まだ記録なし） | | |
+| 2026-10-04 | Rully Cuvée Marey du Clos de Bellecroix | [記録](../../logs/2026/2026-10-04_Domaine-de-la-Folie_Rully-Cuvée-Marey-du-Clos-de-Bellecroix.md) |
 
 [← インデックストップへ](../README.md)

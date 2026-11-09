@@ -9,6 +9,11 @@ import {
   parseIndexLogLinks,
 } from "./lib/indexes.mjs";
 import { layout, emptyState, escapeHtml } from "./lib/layout.mjs";
+import {
+  copyLogPhotosToDist,
+  renderPhotoDetail,
+  renderPhotoListing,
+} from "./lib/photos.mjs";
 
 const BASE = normalizeBase(process.env.BASE_PATH);
 const OUT = path.join(REPO_ROOT, "dist");
@@ -52,20 +57,31 @@ function buildLogs() {
 function inferLogTags(record, { regions, grapes }) {
   const regionIds = [];
   const grapeIds = [];
-  const regionLabel = record.region.toLowerCase();
+  const regionText = `${record.region} ${record.country}`.toLowerCase();
   for (const r of regions) {
-    if (regionLabel && r.label.toLowerCase().includes(regionLabel)) {
+    const terms = r.matchTerms ?? [r.label, r.id];
+    if (terms.some((t) => regionText.includes(String(t).toLowerCase()))) {
       regionIds.push(r.id);
     }
   }
   for (const g of grapes) {
+    const gNorm = g.label.replace(/・/g, "").toLowerCase();
     for (const grape of record.grapes) {
-      if (grape.toLowerCase().includes(g.label.replace(/・/g, "").toLowerCase()) || g.label.includes(grape)) {
+      const grapeNorm = grape.replace(/（[^）]*）/g, "").replace(/・/g, "").toLowerCase();
+      if (g.id === "pinot-noir") {
+        if (/ピノ|pinot/i.test(grape)) grapeIds.push(g.id);
+      } else if (grapeNorm.includes(gNorm) || g.label.includes(grape)) {
         grapeIds.push(g.id);
       }
     }
   }
   return { regionIds: [...new Set(regionIds)], grapeIds: [...new Set(grapeIds)] };
+}
+
+function renderLogListItem(record, base, extraAttrs = "") {
+  const thumb = renderPhotoListing(record, base);
+  const thumbHtml = thumb ? `<span class="log-list__thumb-wrap">${thumb}</span>` : "";
+  return `<li${extraAttrs}><a class="log-list__link" href="${url(base, record.webPath)}">${thumbHtml}<span class="log-list__body"><strong>${escapeHtml(record.wineName || record.displayTitle)}</strong><span class="log-list__date">${escapeHtml(record.drankOn || "")}${record.region ? ` · ${escapeHtml(record.region)}` : ""}</span></span></a></li>`;
 }
 
 function renderLogPage(record, base) {
@@ -99,6 +115,8 @@ function renderLogPage(record, base) {
     ? `<div class="log-block"><h2>メモ（原文）</h2><p>${escapeHtml(record.memo)}</p></div>`
     : "";
 
+  const photo = renderPhotoDetail(record, base);
+
   const body = `
     <article class="log-sheet">
       <header class="log-sheet__head">
@@ -106,6 +124,7 @@ function renderLogPage(record, base) {
         <p class="log-sheet__sub">${escapeHtml(record.producer || "生産者不明")}${record.drankOn ? ` · ${escapeHtml(record.drankOn)}` : ""}</p>
         <div class="tag-row" style="margin-top:0.75rem">${grapeTags}</div>
       </header>
+      ${photo}
       <dl class="dl-grid">${dl}</dl>
       ${impression}
       ${memo}
@@ -153,9 +172,7 @@ function renderHome({ records, regions, grapes }) {
           .slice()
           .sort((a, b) => (b.drankOn || "").localeCompare(a.drankOn || ""))
           .slice(0, 5)
-          .map(
-            (r) => `<li><a href="${url(BASE, r.webPath)}"><strong>${escapeHtml(r.wineName || r.displayTitle)}</strong><div class="log-list__date">${escapeHtml(r.drankOn || "")}</div></a></li>`
-          )
+          .map((r) => renderLogListItem(r, BASE))
           .join("")}</ul>`;
 
   const regionOptions = regions
@@ -171,7 +188,11 @@ function renderHome({ records, regions, grapes }) {
       : `<ul class="log-list" style="margin-top:1rem">${records
           .map((r) => {
             const { regionIds, grapeIds } = inferLogTags(r, { regions, grapes });
-            return `<li data-log-item data-regions="${escapeHtml(regionIds.join(","))}" data-grapes="${escapeHtml(grapeIds.join(","))}"><a href="${url(BASE, r.webPath)}"><strong>${escapeHtml(r.wineName || r.displayTitle)}</strong><div class="log-list__date">${escapeHtml(r.drankOn || "")} · ${escapeHtml(r.region || r.country || "")}</div></a></li>`;
+            return renderLogListItem(
+              r,
+              BASE,
+              ` data-log-item data-regions="${escapeHtml(regionIds.join(","))}" data-grapes="${escapeHtml(grapeIds.join(","))}"`
+            );
           })
           .join("")}</ul>
         <p data-filter-empty class="browse-hint" hidden>条件に合う記録がありません。</p>`;
@@ -255,10 +276,7 @@ function renderIndexDetail(meta, md, logLinks, base) {
     logLinks.length > 0
       ? `<ul class="log-list">${logLinks
           .filter((row) => row.log)
-          .map(
-            (row) =>
-              `<li><a href="${url(base, row.log.webPath)}"><strong>${escapeHtml(row.wine || row.log.wineName || row.log.displayTitle)}</strong><div class="log-list__date">${escapeHtml(row.date || row.log.drankOn || "")}</div></a></li>`
-          )
+          .map((row) => renderLogListItem(row.log, base))
           .join("")}</ul>`
       : emptyState({
           heading: "このインデックスにリンクされた記録はまだありません",
@@ -352,6 +370,8 @@ function main() {
     writePage(meta.webPath, renderIndexDetail(meta, md, links, BASE));
   }
 
+  copyLogPhotosToDist(records, OUT);
+
   for (const record of records) {
     writePage(record.webPath, renderLogPage(record, BASE));
   }
@@ -363,12 +383,7 @@ function main() {
           message:
             "templates/wine-log.md をコピーして logs/ に保存すると、次回のデプロイでここに一覧されます。",
         })
-      : `<ul class="log-list">${records
-          .map(
-            (r) =>
-              `<li><a href="${url(BASE, r.webPath)}"><strong>${escapeHtml(r.wineName || r.displayTitle)}</strong><div class="log-list__date">${escapeHtml(r.drankOn || "")}</div></a></li>`
-          )
-          .join("")}</ul>`;
+      : `<ul class="log-list">${records.map((r) => renderLogListItem(r, BASE)).join("")}</ul>`;
 
   writePage(
     "logs/index.html",

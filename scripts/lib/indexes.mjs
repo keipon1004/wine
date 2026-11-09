@@ -18,6 +18,16 @@ const REGION_LABELS = {
     kind: "region",
     webPath: "regions/france/burgundy.html",
     mdPath: "indexes/regions/france/burgundy.md",
+    matchTerms: ["ブルゴーニュ", "bourgogne", "burgundy"],
+  },
+  "indexes/regions/france/rully.md": {
+    id: "rully",
+    label: "リュリー",
+    country: "フランス",
+    kind: "region",
+    webPath: "regions/france/rully.html",
+    mdPath: "indexes/regions/france/rully.md",
+    matchTerms: ["リュリー", "rully"],
   },
   "indexes/regions/japan/yamanashi.md": {
     id: "yamanashi",

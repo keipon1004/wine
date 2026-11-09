@@ -1,6 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { REPO_ROOT } from "./paths.mjs";
+import { enrichRecordPhoto } from "./photos.mjs";
 
 const PLACEHOLDER_RE =
   /^[（(].*[）)]$|^（まだ記録なし）$|^（YYYY-MM-DD）$|^（.+）$/;
@@ -92,7 +93,7 @@ export function logRecordFromPath(absPath) {
     baseName.replace(/^\d{4}-\d{2}-\d{2}_/, "").replace(/_/g, " ") ||
     baseName;
 
-  return {
+  const baseRecord = {
     id,
     slug,
     relPath: `logs/${rel}`,
@@ -100,4 +101,5 @@ export function logRecordFromPath(absPath) {
     displayTitle,
     ...parsed,
   };
+  return { ...baseRecord, ...enrichRecordPhoto(baseRecord, absPath) };
 }

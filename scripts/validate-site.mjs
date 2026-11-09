@@ -25,6 +25,7 @@ function main() {
   const base = meta.basePath || "/wine/";
   const errors = [];
   const hrefRe = /href="([^"]+)"/g;
+  const srcRe = /src="([^"]+)"/g;
 
   for (const file of collectHtmlFiles(DIST)) {
     const html = fs.readFileSync(file, "utf8");
@@ -48,6 +49,24 @@ function main() {
         errors.push(`${path.relative(DIST, file)}: missing ${href}`);
       }
     }
+
+    let sm;
+    while ((sm = srcRe.exec(html)) !== null) {
+      const src = sm[1];
+      if (SKIP_PREFIXES.some((p) => src.startsWith(p))) continue;
+      let targetPath;
+      if (src.startsWith(base)) {
+        targetPath = path.join(DIST, src.slice(base.length));
+      } else if (src.startsWith("/")) {
+        targetPath = path.join(DIST, src.replace(/^\//, ""));
+      } else {
+        targetPath = path.resolve(path.dirname(file), src);
+      }
+      targetPath = targetPath.split("#")[0];
+      if (!fs.existsSync(targetPath)) {
+        errors.push(`${path.relative(DIST, file)}: missing img src ${src}`);
+      }
+    }
   }
 
   const required = [
@@ -58,6 +77,7 @@ function main() {
     "grapes/index.html",
     "indexes/index.html",
     "regions/france/bordeaux.html",
+    "regions/france/rully.html",
     "assets/css/main.css",
     "assets/js/browse.js",
   ];

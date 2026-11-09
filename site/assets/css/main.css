@@ -403,7 +403,7 @@ a:hover {
   gap: 0.65rem;
 }
 
-.log-list a {
+.log-list > li > a:not(.log-list__link) {
   display: block;
   padding: 0.85rem 1rem;
   border: 1px solid var(--border);
@@ -413,12 +413,71 @@ a:hover {
   color: var(--text);
 }
 
-.log-list a:hover {
+.log-list > li > a:not(.log-list__link):hover {
   border-color: var(--accent-soft);
 }
 
 .log-list__date {
+  display: block;
   font-size: 0.82rem;
+  color: var(--text-muted);
+}
+
+.log-list__link {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 0.85rem 1rem;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--bg-elevated);
+  text-decoration: none;
+  color: var(--text);
+}
+
+.log-list__link:hover {
+  border-color: var(--accent-soft);
+}
+
+.log-list__thumb-wrap {
+  flex: 0 0 auto;
+}
+
+.log-list__thumb {
+  width: 56px;
+  height: 74px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: #ebe3db;
+}
+
+.log-list__body {
+  min-width: 0;
+}
+
+.log-photo {
+  margin: 0 0 1.25rem;
+  max-width: min(420px, 100%);
+}
+
+.log-photo img {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+  background: #ebe3db;
+}
+
+.log-photo-missing {
+  margin: 0 0 1.25rem;
+  padding: 0.85rem 1rem;
+  border-radius: 12px;
+  border: 1px dashed var(--border);
+  background: var(--bg-elevated);
+  font-size: 0.92rem;
   color: var(--text-muted);
 }
 

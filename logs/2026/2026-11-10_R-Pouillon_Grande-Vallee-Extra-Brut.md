@@ -43,6 +43,7 @@ Champagne R. Pouillon & Fils
 
 logs/2026/media/2026-11-10_r-pouillon_grande-vallee_label.jpg
 logs/2026/media/2026-11-10_r-pouillon_grande-vallee_table.jpg
+logs/2026/media/2026-11-10_r-pouillon_grande-vallee_table-wide.jpg
 
 ## メモ（原文）
 

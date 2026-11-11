@@ -20,6 +20,15 @@ const REGION_LABELS = {
     mdPath: "indexes/regions/france/burgundy.md",
     matchTerms: ["ブルゴーニュ", "bourgogne", "burgundy"],
   },
+  "indexes/regions/france/champagne.md": {
+    id: "champagne",
+    label: "シャンパーニュ",
+    country: "フランス",
+    kind: "region",
+    webPath: "regions/france/champagne.html",
+    mdPath: "indexes/regions/france/champagne.md",
+    matchTerms: ["シャンパーニュ", "champagne", "マルヌ"],
+  },
   "indexes/regions/france/rully.md": {
     id: "rully",
     label: "リュリー",
@@ -46,6 +55,13 @@ const GRAPE_LABELS = {
     kind: "grape",
     webPath: "grapes/pinot-noir.html",
     mdPath: "indexes/grapes/pinot-noir.md",
+  },
+  "indexes/grapes/pinot-meunier.md": {
+    id: "pinot-meunier",
+    label: "ピノ・ムニエ",
+    kind: "grape",
+    webPath: "grapes/pinot-meunier.html",
+    mdPath: "indexes/grapes/pinot-meunier.md",
   },
   "indexes/grapes/chardonnay.md": {
     id: "chardonnay",

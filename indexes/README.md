@@ -6,12 +6,13 @@
 
 | 国 | 地域 |
 |----|------|
-| フランス | [ボルドー](regions/france/bordeaux.md) · [ブルゴーニュ](regions/france/burgundy.md) · [リュリー](regions/france/rully.md) |
+| フランス | [ボルドー](regions/france/bordeaux.md) · [ブルゴーニュ](regions/france/burgundy.md) · [シャンパーニュ](regions/france/champagne.md) · [リュリー](regions/france/rully.md) |
 | 日本 | [山梨](regions/japan/yamanashi.md) |
 
 ## 品種
 
 - [ピノ・ノワール](grapes/pinot-noir.md)
+- [ピノ・ムニエ](grapes/pinot-meunier.md)
 - [シャルドネ](grapes/chardonnay.md)
 - [メルロー](grapes/merlot.md)
 

@@ -6,13 +6,19 @@ import { escapeHtml } from "./layout.mjs";
 const IMAGE_EXT = new Set([".jpg", ".jpeg", ".png", ".webp", ".gif", ".avif"]);
 
 export function parsePhotoField(body) {
-  if (!body?.trim()) return "";
+  const fields = parsePhotoFields(body);
+  return fields[0] ?? "";
+}
+
+export function parsePhotoFields(body) {
+  if (!body?.trim()) return [];
+  const fields = [];
   for (const line of body.split("\n")) {
     const t = line.trim();
     if (!t || t.startsWith("<!--")) continue;
-    return t.replace(/^`(.+)`$/, "$1").trim();
+    fields.push(t.replace(/^`(.+)`$/, "$1").trim());
   }
-  return "";
+  return fields;
 }
 
 /** Resolve repo-relative path to an image under logs/ (no traversal). */
@@ -34,8 +40,7 @@ export function resolvePhotoPath(logAbsPath, photoField) {
   return relToRoot;
 }
 
-export function enrichRecordPhoto(record, logAbsPath) {
-  const photoField = parsePhotoField(record.sections?.["写真"] ?? "");
+function photoEntry(logAbsPath, photoField) {
   const photoRepoRel = photoField ? resolvePhotoPath(logAbsPath, photoField) : null;
   const photoExists = photoRepoRel ? fs.existsSync(path.join(REPO_ROOT, photoRepoRel)) : false;
   const photoDistRel = photoRepoRel ? photoRepoRel.replace(/^logs\//, "media/logs/") : null;
@@ -49,13 +54,26 @@ export function enrichRecordPhoto(record, logAbsPath) {
   };
 }
 
+export function enrichRecordPhoto(record, logAbsPath) {
+  const photoFields = parsePhotoFields(record.sections?.["写真"] ?? "");
+  const photos = photoFields.map((f) => photoEntry(logAbsPath, f));
+  const primary = photos[0] ?? photoEntry(logAbsPath, "");
+  return {
+    photos,
+    ...primary,
+  };
+}
+
 export function copyLogPhotosToDist(records, outDir) {
   for (const record of records) {
-    if (!record.photoExists || !record.photoRepoRel) continue;
-    const src = path.join(REPO_ROOT, record.photoRepoRel);
-    const dest = path.join(outDir, record.photoDistRel);
-    fs.mkdirSync(path.dirname(dest), { recursive: true });
-    fs.copyFileSync(src, dest);
+    const items = record.photos?.length ? record.photos : [record];
+    for (const p of items) {
+      if (!p.photoExists || !p.photoRepoRel) continue;
+      const src = path.join(REPO_ROOT, p.photoRepoRel);
+      const dest = path.join(outDir, p.photoDistRel);
+      fs.mkdirSync(path.dirname(dest), { recursive: true });
+      fs.copyFileSync(src, dest);
+    }
   }
 }
 
@@ -65,15 +83,30 @@ export function photoAltText(record) {
 }
 
 export function renderPhotoDetail(record, base) {
-  if (record.photoExists && record.photoWebPath) {
-    const src = url(base, record.photoWebPath);
-    const alt = escapeHtml(photoAltText(record));
-    return `<figure class="log-photo">
+  const items = record.photos?.length ? record.photos : [record];
+  const figures = [];
+  const missing = [];
+  const alt = escapeHtml(photoAltText(record));
+  for (const p of items) {
+    if (!p.photoField) continue;
+    if (p.photoExists && p.photoWebPath) {
+      const src = url(base, p.photoWebPath);
+      figures.push(`<figure class="log-photo">
       <img src="${escapeHtml(src)}" alt="${alt}" width="640" loading="lazy" decoding="async">
-    </figure>`;
+    </figure>`);
+    } else {
+      missing.push(p.photoField);
+    }
   }
-  if (record.photoField && !record.photoExists) {
-    return `<p class="log-photo-missing" role="status">写真は未登録です（再アップロード後に <code>${escapeHtml(record.photoField)}</code> を置くと表示されます）。</p>`;
+  if (figures.length) {
+    const warn =
+      missing.length > 0
+        ? `<p class="log-photo-missing" role="status">一部の写真は未登録です（${missing.map((m) => `<code>${escapeHtml(m)}</code>`).join("、")}）。</p>`
+        : "";
+    return figures.join("\n") + warn;
+  }
+  if (missing.length) {
+    return `<p class="log-photo-missing" role="status">写真は未登録です（再アップロード後に ${missing.map((m) => `<code>${escapeHtml(m)}</code>`).join("、")} を置くと表示されます）。</p>`;
   }
   return "";
 }

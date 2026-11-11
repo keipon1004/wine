@@ -7,6 +7,6 @@
 
 | 飲んだ日 | ワイン | 記録 |
 |----------|--------|------|
-| （まだ記録なし） | | |
+| 2026-11-10 | Grande Vallée Extra-Brut | [記録](../../logs/2026/2026-11-10_R-Pouillon_Grande-Vallee-Extra-Brut.md) |
 
 [← インデックストップへ](../README.md)

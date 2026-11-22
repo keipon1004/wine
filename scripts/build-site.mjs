@@ -70,6 +70,8 @@ function inferLogTags(record, { regions, grapes }) {
       const grapeNorm = grape.replace(/（[^）]*）/g, "").replace(/・/g, "").toLowerCase();
       if (g.id === "pinot-noir") {
         if (/ピノ|pinot/i.test(grape)) grapeIds.push(g.id);
+      } else if (g.matchTerms?.some((t) => grapeNorm.includes(String(t).toLowerCase()) || grape.includes(t))) {
+        grapeIds.push(g.id);
       } else if (grapeNorm.includes(gNorm) || g.label.includes(grape)) {
         grapeIds.push(g.id);
       }

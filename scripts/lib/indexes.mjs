@@ -55,6 +55,15 @@ const REGION_LABELS = {
     mdPath: "indexes/regions/italy/marche.md",
     matchTerms: ["マルチェ", "marche", "レ・マルケ", "イエージ"],
   },
+  "indexes/regions/italy/valtellina.md": {
+    id: "valtellina",
+    label: "バルテッリーナ",
+    country: "イタリア",
+    kind: "region",
+    webPath: "regions/italy/valtellina.html",
+    mdPath: "indexes/regions/italy/valtellina.md",
+    matchTerms: ["バルテッリーナ", "valtellina", "ヴァルテッリーナ", "ロンバルディア"],
+  },
   "indexes/regions/france/jura.md": {
     id: "jura",
     label: "ジュラ",
@@ -101,6 +110,14 @@ const GRAPE_LABELS = {
     kind: "grape",
     webPath: "grapes/verdicchio.html",
     mdPath: "indexes/grapes/verdicchio.md",
+  },
+  "indexes/grapes/nebbiolo.md": {
+    id: "nebbiolo",
+    label: "ネッビオーロ",
+    kind: "grape",
+    webPath: "grapes/nebbiolo.html",
+    mdPath: "indexes/grapes/nebbiolo.md",
+    matchTerms: ["ネッビオーロ", "nebbiolo", "キアヴェンナスカ", "chiavennasca"],
   },
 };
 

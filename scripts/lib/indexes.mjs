@@ -46,6 +46,24 @@ const REGION_LABELS = {
     webPath: "regions/japan/yamanashi.html",
     mdPath: "indexes/regions/japan/yamanashi.md",
   },
+  "indexes/regions/italy/marche.md": {
+    id: "marche",
+    label: "マルチェ",
+    country: "イタリア",
+    kind: "region",
+    webPath: "regions/italy/marche.html",
+    mdPath: "indexes/regions/italy/marche.md",
+    matchTerms: ["マルチェ", "marche", "レ・マルケ", "イエージ"],
+  },
+  "indexes/regions/france/jura.md": {
+    id: "jura",
+    label: "ジュラ",
+    country: "フランス",
+    kind: "region",
+    webPath: "regions/france/jura.html",
+    mdPath: "indexes/regions/france/jura.md",
+    matchTerms: ["ジュラ", "jura", "アルボワ", "arbois"],
+  },
 };
 
 const GRAPE_LABELS = {
@@ -76,6 +94,13 @@ const GRAPE_LABELS = {
     kind: "grape",
     webPath: "grapes/merlot.html",
     mdPath: "indexes/grapes/merlot.md",
+  },
+  "indexes/grapes/verdicchio.md": {
+    id: "verdicchio",
+    label: "ヴェルディッキオ",
+    kind: "grape",
+    webPath: "grapes/verdicchio.html",
+    mdPath: "indexes/grapes/verdicchio.md",
   },
 };
 

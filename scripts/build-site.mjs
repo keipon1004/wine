@@ -117,6 +117,24 @@ function renderLogPage(record, base) {
 
   const photo = renderPhotoDetail(record, base);
 
+  const supplementaryTitles = [
+    "解説",
+    "参考情報（公開資料・出典）",
+    "お店の手書きメモ",
+  ];
+  const supplementary = supplementaryTitles
+    .map((title) => {
+      const bodyMd = record.sections?.[title]?.trim();
+      if (!bodyMd) return "";
+      const intro =
+        title === "お店の手書きメモ"
+          ? '<p class="text-muted">※以下は購入店の手書きタグの転記です。個人の印象ではありません。</p>'
+          : '<p class="text-muted">※以下は公開資料に基づく解説です。個人の印象・採点とは別です。</p>';
+      const html = markdownToHtml(bodyMd, record.relPath);
+      return `<div class="log-block prose"><h2>${escapeHtml(title)}</h2>${intro}${html}</div>`;
+    })
+    .join("");
+
   const body = `
     <article class="log-sheet">
       <header class="log-sheet__head">
@@ -126,6 +144,7 @@ function renderLogPage(record, base) {
       </header>
       ${photo}
       <dl class="dl-grid">${dl}</dl>
+      ${supplementary}
       ${impression}
       ${memo}
     </article>`;

@@ -7,7 +7,7 @@
 | 国 | 地域 |
 |----|------|
 | フランス | [ボルドー](regions/france/bordeaux.md) · [ブルゴーニュ](regions/france/burgundy.md) · [シャンパーニュ](regions/france/champagne.md) · [リュリー](regions/france/rully.md) · [ジュラ](regions/france/jura.md) |
-| イタリア | [マルチェ](regions/italy/marche.md) |
+| イタリア | [マルチェ](regions/italy/marche.md) · [バルテッリーナ](regions/italy/valtellina.md) |
 | 日本 | [山梨](regions/japan/yamanashi.md) |
 
 ## 品種
@@ -16,6 +16,7 @@
 - [ピノ・ムニエ](grapes/pinot-meunier.md)
 - [シャルドネ](grapes/chardonnay.md)
 - [ヴェルディッキオ](grapes/verdicchio.md)
+- [ネッビオーロ](grapes/nebbiolo.md)
 - [メルロー](grapes/merlot.md)
 
 ## 記録（年別）
